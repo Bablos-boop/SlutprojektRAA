@@ -23,7 +23,48 @@ public class PokemonBase : ScriptableObject
     [SerializeField] int spDefence;
     [SerializeField] int speed;
 
-}
+  
+public string Name  
+    {
+        get { return  name;}
+    }
+
+public string Description
+    {
+        get {return description;}
+    }
+
+public int MaxHp
+    {
+        get { return maxHp; }
+    }
+
+public int Attack
+    {
+        get { return attack; }
+    }
+
+public int Defence
+    {
+        get { return defence; }
+    }
+
+public int SpAttack
+    {
+        get { return spAttack; }
+    }
+
+public int SpDefence
+    {
+        get { return spDefence; }
+    }
+
+public int Speed
+    {
+        get { return speed; }
+    }
+
+
 
 public enum PokemonType
 {
@@ -46,4 +87,5 @@ public enum PokemonType
     Rock,
     Dragon,
     Ice,
+}
 }
