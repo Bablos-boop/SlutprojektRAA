@@ -14,13 +14,18 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::PokemonBase
   name: Infernape
   description: 
-  frontSprite: {fileID: 0}
-  backSprite: {fileID: 0}
-  type1: 0
-  type2: 0
-  maxHp: 0
-  attack: 0
-  defence: 0
-  spAttack: 0
-  spDefence: 0
-  speed: 0
+  frontSprite: {fileID: 1199501018403949032, guid: c5c1a37f01e2a554b921900c8090e9f7, type: 3}
+  backSprite: {fileID: -1835124197688926857, guid: e17b4f224dc1bc84c8637d767762149c, type: 3}
+  type1: 2
+  type2: 3
+  maxHp: 76
+  attack: 104
+  defence: 71
+  spAttack: 104
+  spDefence: 71
+  speed: 108
+  learnableMoves:
+  - moveBase: {fileID: 11400000, guid: fff5680d84757fc4da7562f94178c52c, type: 2}
+    level: 50
+  - moveBase: {fileID: 11400000, guid: d7f2acba67bdd6946ada6164c4dd6eb7, type: 2}
+    level: 50

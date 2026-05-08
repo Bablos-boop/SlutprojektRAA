@@ -12,15 +12,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 28986ba91bba4a0489f29ba442491e44, type: 3}
   m_Name: Empoleon
   m_EditorClassIdentifier: Assembly-CSharp::PokemonBase
-  name: 
+  name: Empoleon
   description: 
-  frontSprite: {fileID: 0}
-  backSprite: {fileID: 0}
-  type1: 0
-  type2: 0
-  maxHp: 0
-  attack: 0
-  defence: 0
-  spAttack: 0
-  spDefence: 0
-  speed: 0
+  frontSprite: {fileID: -4505388099979798363, guid: ec0c00997904fb3438d7a0b8d068672c, type: 3}
+  backSprite: {fileID: 20305871001308992, guid: d5e9ff0d33abf2a4b818b81546b71d07, type: 3}
+  type1: 4
+  type2: 5
+  maxHp: 84
+  attack: 86
+  defence: 88
+  spAttack: 111
+  spDefence: 101
+  speed: 60
