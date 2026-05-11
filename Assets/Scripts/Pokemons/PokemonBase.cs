@@ -7,7 +7,7 @@ using UnityEngine.Rendering;
 [CreateAssetMenu(fileName="Pokemon", menuName = "Pokemon/Create new pokemon")]
 public class PokemonBase : ScriptableObject
 {
-    [SerializeField] string name;
+    [SerializeField] string pokemonName;
 
     [TextArea]
     [SerializeField] string description;
@@ -16,6 +16,16 @@ public class PokemonBase : ScriptableObject
     [SerializeField] Sprite backSprite;
     [SerializeField] PokemonType type1;
     [SerializeField] PokemonType type2;
+
+    public Sprite FrontSprite
+    {
+        get { return frontSprite; }
+    }
+
+    public Sprite BackSprite
+    {
+        get { return backSprite; }
+    }
 
     // Base Stats
     [SerializeField] int maxHp;
@@ -30,7 +40,7 @@ public class PokemonBase : ScriptableObject
   
 public string Name  
     {
-        get { return  name;}
+        get { return pokemonName;}
     }
 
 public string Description
