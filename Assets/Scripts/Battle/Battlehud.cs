@@ -10,7 +10,7 @@ public class Battlehud : MonoBehaviour
 
     public void SetData(Pokemon pokemon)
     {
-        NameText.text = pokemon.Base.Name;
+        NameText.text = pokemon.Name;
         LevelText.text = "Lvl " + pokemon.Level;
         hpBar.SetHP((float)pokemon.HP / pokemon.MaxHp);
     }

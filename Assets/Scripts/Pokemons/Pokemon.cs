@@ -8,6 +8,11 @@ public class Pokemon
    public PokemonBase Base {get; set;}
    public int Level {get; set;}
    public int HP { get; set; }
+   public string Nickname { get; set; }
+
+   public string Name {
+       get { return Nickname ?? Base.Name; }
+   }
 
    public Pokemon(PokemonBase pBase, int pLevel)
    {
