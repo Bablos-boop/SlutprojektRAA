@@ -54,10 +54,7 @@ public class BattleSystem : MonoBehaviour
 }
 
 
-public void EnableDialogText(bool enabled)
-{
-    dialogBox.enabled = enabled; // 
-}
+
     void PlayerMoveSelection()
 {
     state = BattleState.PlayerMove;
@@ -149,33 +146,31 @@ public void EnableDialogText(bool enabled)
     }
 
     // UTFÖR SPELARENS ATTACK
-    // UTFÖR SPELARENS ATTACK
-IEnumerator PerformPlayerMove()
-{
-    state = BattleState.Busy;
-    var move = playerUnit.Pokemon.Moves[currentMove];
-    
-    // NYTT: Sätt på dialogtexten igen så att attack-meddelandet faktiskt syns!
-    dialogBox.EnableDialogText(true); 
-    
-    yield return dialogBox.TypeDialog($"{playerUnit.Pokemon.Name} used {move.Base.Name}!");
-    yield return new WaitForSeconds(1f);
-
-    // Fienden tar skada
-    bool isFainted = enemyUnit.Pokemon.TakeDamage(move, playerUnit.Pokemon);
-    
-    // Vänta här tills fiendens HP-bar har glidit ner klart på skärmen
-    yield return enemyHud.UpdateHP();
-
-    if (isFainted)
+    IEnumerator PerformPlayerMove()
     {
-        yield return dialogBox.TypeDialog($"{enemyUnit.Pokemon.Name} fainted!");
+        state = BattleState.Busy;
+        var move = playerUnit.Pokemon.Moves[currentMove];
+        dialogBox.EnableDialogText(true);
+        
+        yield return dialogBox.TypeDialog($"{playerUnit.Pokemon.Name} used {move.Base.Name}!");
+        yield return new WaitForSeconds(1f);
+
+        // Fienden tar skada
+        bool isFainted = enemyUnit.Pokemon.TakeDamage(move, playerUnit.Pokemon);
+        
+        // Vänta här tills fiendens HP-bar har glidit ner klart på skärmen
+        yield return enemyHud.UpdateHP();
+
+        if (isFainted)
+        {
+            yield return dialogBox.TypeDialog($"{enemyUnit.Pokemon.Name} fainted!");
+        }
+        else
+        {
+            StartCoroutine(EnemyMove());
+        }
     }
-    else
-    {
-        StartCoroutine(EnemyMove());
-    }
-}
+
     // FIENDENS TUR (Slumpmässig attack)
     IEnumerator EnemyMove()
     {

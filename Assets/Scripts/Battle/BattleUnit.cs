@@ -16,12 +16,16 @@ public class BattleUnit : MonoBehaviour
     [SerializeField] PokemonBase infernapeBase;
     [SerializeField] PokemonBase empoleonBase;
 
-    public Pokemon Pokemon { get; private set; }
+    public Pokemon Pokemon { get; set; }
 
-    private void Reset()
-    {
-        pokemonImage = GetComponent<Image>();
-    }
+public void Setup(Pokemon pokemon)
+{
+    Pokemon = pokemon;
+    
+    GetComponent<UnityEngine.UI.Image>().sprite = (isPlayerUnit) ? Pokemon.Base.BackSprite : Pokemon.Base.FrontSprite;
+    
+    gameObject.SetActive(true);                     
+}
 
     public void SetupFromInspector()
 {
