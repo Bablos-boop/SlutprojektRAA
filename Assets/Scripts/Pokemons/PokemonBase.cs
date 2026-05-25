@@ -11,7 +11,11 @@ public class PokemonBase : ScriptableObject
 
     [TextArea]
     [SerializeField] string description;
+    [SerializeField] RuntimeAnimatorController frontAnimator;
+    [SerializeField] RuntimeAnimatorController backAnimator;
 
+    public RuntimeAnimatorController FrontAnimator => frontAnimator;
+    public RuntimeAnimatorController BackAnimator => backAnimator;
     [SerializeField] Sprite frontSprite;
     [SerializeField] Sprite backSprite;
     [SerializeField] PokemonType type1;
@@ -85,6 +89,7 @@ public int Speed
 }
 
 [System.Serializable]
+
 public class LearnableMove
 {
     [SerializeField] Movebase moveBase;

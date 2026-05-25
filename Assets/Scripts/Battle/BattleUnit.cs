@@ -24,31 +24,42 @@ public class BattleUnit : MonoBehaviour
     }
 
     public void SetupFromInspector()
+{
+    PokemonBase selectedBase = GetSelectedBase();
+    if (selectedBase == null) return;
+
+    Pokemon = new Pokemon(selectedBase, Mathf.Max(1, level));
+    
+    Setup(Pokemon, isPlayerUnit); 
+}
+
+public void Setup(Pokemon pokemon, bool isPlayer)
+{
+    Pokemon = pokemon;
+    isPlayerUnit = isPlayer; 
+
+    pokemonImage = GetComponent<Image>();
+
+    if (pokemonImage == null) return;
+
+    Animator animator = GetComponent<Animator>();
+    if (animator != null)
     {
-        PokemonBase selectedBase = GetSelectedBase();
-        if (selectedBase == null)
-        {
-            Debug.LogWarning($"BattleUnit: No PokemonBase assigned for {baseChoice}", gameObject);
-            return;
-        }
-
-        Pokemon = new Pokemon(selectedBase, Mathf.Max(1, level));
-        Setup(Pokemon);
+        animator.enabled = false; 
     }
+    
 
-    public void Setup(Pokemon pokemon)
+    if (isPlayerUnit)
     {
-        Pokemon = pokemon;
-
-        if (pokemonImage == null)
-            pokemonImage = GetComponent<Image>();
-
-        if (pokemonImage == null)
-            return;
-
-        pokemonImage.sprite = isPlayerUnit ? pokemon.Base.BackSprite : pokemon.Base.FrontSprite;
+        pokemonImage.sprite = Pokemon.Base.BackSprite;
+        Debug.Log($"Spelarens bild ändrades till: {pokemonImage.sprite.name}");
     }
-
+    else
+    {
+        pokemonImage.sprite = Pokemon.Base.FrontSprite;
+        Debug.Log($"Fiendens bild ändrades till: {pokemonImage.sprite.name}");
+    }
+}
     private PokemonBase GetSelectedBase()
     {
         return baseChoice == PokemonChoice.Infernape ? infernapeBase : empoleonBase;

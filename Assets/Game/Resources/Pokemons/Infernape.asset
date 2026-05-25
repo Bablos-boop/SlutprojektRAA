@@ -12,8 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 28986ba91bba4a0489f29ba442491e44, type: 3}
   m_Name: Infernape
   m_EditorClassIdentifier: Assembly-CSharp::PokemonBase
-  name: Infernape
+  pokemonName: Infernape
   description: 
+  frontAnimator: {fileID: 9100000, guid: 12489c3280f69934095067cba2809b0b, type: 2}
+  backAnimator: {fileID: 0}
   frontSprite: {fileID: 1199501018403949032, guid: c5c1a37f01e2a554b921900c8090e9f7, type: 3}
   backSprite: {fileID: -1835124197688926857, guid: e17b4f224dc1bc84c8637d767762149c, type: 3}
   type1: 2
@@ -28,4 +30,8 @@ MonoBehaviour:
   - moveBase: {fileID: 11400000, guid: fff5680d84757fc4da7562f94178c52c, type: 2}
     level: 50
   - moveBase: {fileID: 11400000, guid: d7f2acba67bdd6946ada6164c4dd6eb7, type: 2}
+    level: 50
+  - moveBase: {fileID: 11400000, guid: 4a0402c4a36ffd54da55889e3275832d, type: 2}
+    level: 50
+  - moveBase: {fileID: 11400000, guid: 616fea77044cb164795081df3b0d41ea, type: 2}
     level: 50
