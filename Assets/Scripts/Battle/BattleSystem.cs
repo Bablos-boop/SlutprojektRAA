@@ -1,8 +1,17 @@
 using System;
 using System.Collections;
+using System.Collections.Generic; // Lägger till stöd för listor
 using UnityEngine;
 
 public enum BattleState { Start, PlayerAction, PlayerMove, EnemyMove, Busy }
+
+// Denna lilla klass gör att du får snygga rutor i Unity där du väljer Pokémon + Level
+[System.Serializable]
+public class PokemonSetup
+{
+    public PokemonBase pokemonBase;
+    public int level = 5;
+}
 
 public class BattleSystem : MonoBehaviour
 {
@@ -11,6 +20,15 @@ public class BattleSystem : MonoBehaviour
     [SerializeField] Battlehud playerHud;
     [SerializeField] Battlehud enemyHud;
     [SerializeField] BattleDialogBox dialogBox;
+
+    // NYTT: Här skapas listorna som syns i Unitys Inspector!
+    [Header("Party Setup")]
+    [SerializeField] List<PokemonSetup> playerPartySetup;
+    [SerializeField] List<PokemonSetup> enemyPartySetup;
+
+    // De faktiska lag-listorna som spelet använder under striden
+    List<Pokemon> playerParty;
+    List<Pokemon> enemyParty;
 
     BattleState state;
     int currentAction; // 0: Fight, 1: Bag, 2: Pokemon, 3: Run
@@ -26,8 +44,28 @@ public class BattleSystem : MonoBehaviour
         dialogBox.EnableActionSelector(false);
         dialogBox.EnableMoveSelector(false);
 
-        playerUnit.SetupFromInspector();
-        enemyUnit.SetupFromInspector();
+        // Bygg spelarens lag utifrån vad du valt i inspektören
+        playerParty = new List<Pokemon>();
+        foreach (var setup in playerPartySetup)
+        {
+            if (setup.pokemonBase != null)
+                playerParty.Add(new Pokemon(setup.pokemonBase, Mathf.Max(1, setup.level)));
+        }
+
+        //  Bygg fiendens lag utifrån vad du valt i inspektören
+        enemyParty = new List<Pokemon>();
+        foreach (var setup in enemyPartySetup)
+        {
+            if (setup.pokemonBase != null)
+                enemyParty.Add(new Pokemon(setup.pokemonBase, Mathf.Max(1, setup.level)));
+        }
+
+        // Hämta den första levande Pokémonen från vardera lag
+        var firstPlayer = GetHealthyPlayerPokemon();
+        var firstEnemy = GetHealthyEnemyPokemon();
+
+        if (firstPlayer != null) playerUnit.Setup(firstPlayer, true);
+        if (firstEnemy != null) enemyUnit.Setup(firstEnemy, false);
         
         playerHud.SetData(playerUnit.Pokemon);
         enemyHud.SetData(enemyUnit.Pokemon);
@@ -40,31 +78,52 @@ public class BattleSystem : MonoBehaviour
         PlayerAction();
     }
 
+    // Hjälpfunktioner för att hitta nästa friska Pokémon i listorna
+    Pokemon GetHealthyPlayerPokemon()
+    {
+        foreach (var pokemon in playerParty)
+        {
+            if (pokemon.HP > 0) return pokemon;
+        }
+        return null;
+    }
+
+    Pokemon GetHealthyEnemyPokemon()
+    {
+        foreach (var pokemon in enemyParty)
+        {
+            if (pokemon.HP > 0) return pokemon;
+        }
+        return null;
+    }
+
     void PlayerAction()
-{
-    state = BattleState.PlayerAction; 
-    
-    // Sätt på huvudtexten igen när vi går tillbaka
-    dialogBox.EnableDialogText(true); 
-    
-    StartCoroutine(dialogBox.TypeDialog("Choose an Action"));
-    dialogBox.EnableActionSelector(true);
-    dialogBox.EnableMoveSelector(false);
-    dialogBox.UpdateActionSelection(currentAction);
-}
+    {
+        state = BattleState.PlayerAction; 
+        
+        dialogBox.EnableDialogText(true); 
+        
+        StartCoroutine(dialogBox.TypeDialog("Choose an Action"));
+        dialogBox.EnableActionSelector(true);
+        dialogBox.EnableMoveSelector(false);
+        dialogBox.UpdateActionSelection(currentAction);
+    }
 
-
+    public void EnableDialogText(bool enabled)
+    {
+        dialogBox.enabled = enabled; 
+    }
 
     void PlayerMoveSelection()
-{
-    state = BattleState.PlayerMove;
-    dialogBox.EnableActionSelector(false);
-    
-    dialogBox.EnableDialogText(false); 
-    
-    dialogBox.EnableMoveSelector(true);
-    dialogBox.UpdateMoveSelection(currentMove, playerUnit.Pokemon.Moves[currentMove]);
-}
+    {
+        state = BattleState.PlayerMove;
+        dialogBox.EnableActionSelector(false);
+        
+        dialogBox.EnableDialogText(false); 
+        
+        dialogBox.EnableMoveSelector(true);
+        dialogBox.UpdateMoveSelection(currentMove, playerUnit.Pokemon.Moves[currentMove]);
+    }
 
     private void Update()
     {
@@ -78,7 +137,6 @@ public class BattleSystem : MonoBehaviour
         }
     }
 
-    // Navigering i (Fight, Bag, Pokemon, Run)
     void HandleActionSelection()
     {
         if (Input.GetKeyDown(KeyCode.DownArrow))
@@ -109,7 +167,6 @@ public class BattleSystem : MonoBehaviour
         }
     }
 
-    // Navigering bland de 4 attackerna 
     void HandleMoveSelection()
     {
         if (Input.GetKeyDown(KeyCode.DownArrow))
@@ -131,13 +188,11 @@ public class BattleSystem : MonoBehaviour
 
         dialogBox.UpdateMoveSelection(currentMove, playerUnit.Pokemon.Moves[currentMove]);
 
-        // Gå tillbaka till huvudmenyn med X
         if (Input.GetKeyDown(KeyCode.X))
         {
             PlayerAction();
         }
 
-        // Välj attack med Z / Enter
         if (Input.GetKeyDown(KeyCode.Z) || Input.GetKeyDown(KeyCode.Return))
         {
             dialogBox.EnableMoveSelector(false);
@@ -145,25 +200,39 @@ public class BattleSystem : MonoBehaviour
         }
     }
 
-    // UTFÖR SPELARENS ATTACK
     IEnumerator PerformPlayerMove()
     {
         state = BattleState.Busy;
         var move = playerUnit.Pokemon.Moves[currentMove];
-        dialogBox.EnableDialogText(true);
+        
+        dialogBox.EnableDialogText(true); 
         
         yield return dialogBox.TypeDialog($"{playerUnit.Pokemon.Name} used {move.Base.Name}!");
         yield return new WaitForSeconds(1f);
 
-        // Fienden tar skada
         bool isFainted = enemyUnit.Pokemon.TakeDamage(move, playerUnit.Pokemon);
         
-        // Vänta här tills fiendens HP-bar har glidit ner klart på skärmen
         yield return enemyHud.UpdateHP();
 
         if (isFainted)
         {
             yield return dialogBox.TypeDialog($"{enemyUnit.Pokemon.Name} fainted!");
+            yield return new WaitForSeconds(1f);
+
+            //  Kolla om fienden har fler Pokémon i sin lista
+            var nextPokemon = GetHealthyEnemyPokemon();
+            if (nextPokemon != null)
+            {
+                enemyUnit.Setup(nextPokemon, false);
+                enemyHud.SetData(nextPokemon);
+                yield return dialogBox.TypeDialog($"Enemy sent out {nextPokemon.Name}!");
+                yield return new WaitForSeconds(1f);
+                PlayerAction(); 
+            }
+            else
+            {
+                yield return dialogBox.TypeDialog("You won the battle!");
+            }
         }
         else
         {
@@ -171,7 +240,6 @@ public class BattleSystem : MonoBehaviour
         }
     }
 
-    // FIENDENS TUR (Slumpmässig attack)
     IEnumerator EnemyMove()
     {
         state = BattleState.EnemyMove;
@@ -182,15 +250,30 @@ public class BattleSystem : MonoBehaviour
         yield return dialogBox.TypeDialog($"Wild {enemyUnit.Pokemon.Name} used {move.Base.Name}!");
         yield return new WaitForSeconds(1f);
 
-        // Spelaren tar skada
         bool isFainted = playerUnit.Pokemon.TakeDamage(move, enemyUnit.Pokemon);
         
-        // NYTT: Vänta här tills spelarens HP-bar har glidit ner klart på skärmen!
         yield return playerHud.UpdateHP();
 
         if (isFainted)
         {
             yield return dialogBox.TypeDialog($"{playerUnit.Pokemon.Name} fainted!");
+            yield return new WaitForSeconds(1f);
+
+            //  Kolla om du har fler Pokémon i din lista
+            var nextPokemon = GetHealthyPlayerPokemon();
+            if (nextPokemon != null)
+            {
+                playerUnit.Setup(nextPokemon, true);
+                playerHud.SetData(nextPokemon);
+                dialogBox.SetMoveNames(nextPokemon.Moves); // Uppdaterar attack-knapparna till den nya gubben
+                yield return dialogBox.TypeDialog($"Go {nextPokemon.Name}!");
+                yield return new WaitForSeconds(1f);
+                PlayerAction();
+            }
+            else
+            {
+                yield return dialogBox.TypeDialog("You lost the battle...");
+            }
         }
         else
         {

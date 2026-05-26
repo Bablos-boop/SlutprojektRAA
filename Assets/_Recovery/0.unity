@@ -290,7 +290,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 415.60498, y: 13.587755}
+  m_AnchoredPosition: {x: 381.25742, y: 13.588129}
   m_SizeDelta: {x: 526.91, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &68588374
@@ -406,6 +406,7 @@ GameObject:
   - component: {fileID: 70471131}
   - component: {fileID: 70471130}
   - component: {fileID: 70471133}
+  - component: {fileID: 70471134}
   m_Layer: 0
   m_Name: PlayerUnit
   m_TagString: Untagged
@@ -510,6 +511,21 @@ MonoBehaviour:
   level: 50
   infernapeBase: {fileID: 11400000, guid: 7e3c02b1490c811498d4fececd4b379f, type: 2}
   empoleonBase: {fileID: 11400000, guid: adb2f3886b57a8548af4f99cfbebeb12, type: 2}
+--- !u!114 &70471134
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 70471128}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4c4aefa35781834e84456815e3dcf85, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PokemonParty
+  pokemons:
+  - _base: {fileID: 11400000, guid: adb2f3886b57a8548af4f99cfbebeb12, type: 2}
+    level: 50
 --- !u!1 &164791289
 GameObject:
   m_ObjectHideFlags: 0
@@ -644,7 +660,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 322.12552, y: 17.610035}
+  m_AnchoredPosition: {x: 284.8639, y: 21.78824}
   m_SizeDelta: {x: 158.39, y: 35.22}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &170272462
@@ -2031,7 +2047,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 398.98508, y: -32.611023}
+  m_AnchoredPosition: {x: 364.63748, y: -28.652967}
   m_SizeDelta: {x: 493.67, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &763888672
@@ -3535,6 +3551,7 @@ GameObject:
   - component: {fileID: 1741342311}
   - component: {fileID: 1741342310}
   - component: {fileID: 1741342309}
+  - component: {fileID: 1741342313}
   m_Layer: 0
   m_Name: EnemyUnit
   m_TagString: Untagged
@@ -3639,6 +3656,19 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1741342307}
   m_CullTransparentMesh: 1
+--- !u!114 &1741342313
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1741342307}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4c4aefa35781834e84456815e3dcf85, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PokemonParty
+  pokemons: []
 --- !u!1 &1753871017
 GameObject:
   m_ObjectHideFlags: 0
@@ -3690,16 +3720,6 @@ MonoBehaviour:
   playerHud: {fileID: 2015470665}
   enemyHud: {fileID: 1596946691}
   dialogBox: {fileID: 1122897693}
-  playerPartySetup:
-  - pokemonBase: {fileID: 11400000, guid: 7e3c02b1490c811498d4fececd4b379f, type: 2}
-    level: 50
-  - pokemonBase: {fileID: 11400000, guid: 71b0c4389832feb42b8e04eca9ecc767, type: 2}
-    level: 50
-  enemyPartySetup:
-  - pokemonBase: {fileID: 11400000, guid: adb2f3886b57a8548af4f99cfbebeb12, type: 2}
-    level: 50
-  - pokemonBase: {fileID: 11400000, guid: 006cb624f15aca9408961cb8e112cfa7, type: 2}
-    level: 50
 --- !u!1 &1824704192
 GameObject:
   m_ObjectHideFlags: 0

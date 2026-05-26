@@ -1,0 +1,33 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 28986ba91bba4a0489f29ba442491e44, type: 3}
+  m_Name: Garchomp
+  m_EditorClassIdentifier: Assembly-CSharp::PokemonBase
+  pokemonName: Garchomp
+  description: 
+  frontAnimator: {fileID: 0}
+  backAnimator: {fileID: 0}
+  frontSprite: {fileID: 6027302175543392423, guid: bcde4ada8c3d8854b8ded0ef335682ce, type: 3}
+  backSprite: {fileID: 8617051359438195639, guid: ec0cf63ef17120f48aa7184a24f22382, type: 3}
+  type1: 17
+  type2: 9
+  maxHp: 108
+  attack: 130
+  defence: 95
+  spAttack: 80
+  spDefence: 85
+  speed: 102
+  learnableMoves:
+  - moveBase: {fileID: 11400000, guid: 4405fd1a8ee70ff4a862f9aea9694abf, type: 2}
+    level: 50
+  - moveBase: {fileID: 11400000, guid: 60a60283da8844e409bdcaa90146defd, type: 2}
+    level: 50
