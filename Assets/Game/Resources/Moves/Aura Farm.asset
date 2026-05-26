@@ -12,9 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: de46ff5beb3da9545ad5f9cdb63ce34a, type: 3}
   m_Name: Aura Farm
   m_EditorClassIdentifier: Assembly-CSharp::Movebase
-  name: 
+  name: Aura Farm
   description: 
-  type: 0
+  type: 11
   power: 100
   accuracy: 80
   pp: 0

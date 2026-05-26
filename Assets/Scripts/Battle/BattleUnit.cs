@@ -7,6 +7,10 @@ public class BattleUnit : MonoBehaviour
     {
         Infernape,
         Empoleon,
+        Garchomp,
+        Torterra,
+
+        
     }
 
     [SerializeField] Image pokemonImage;
