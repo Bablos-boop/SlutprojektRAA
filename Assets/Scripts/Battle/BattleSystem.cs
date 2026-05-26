@@ -216,99 +216,118 @@ public class BattleSystem : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Z) || Input.GetKeyDown(KeyCode.Return))
         {
             dialogBox.EnableMoveSelector(false);
-            StartCoroutine(PerformPlayerMove());
+            StartCoroutine(RunTurns()); // FUNKTION SOM HANTERAR HASTIGHET
         }
     }
+IEnumerator RunTurns()
+{
+    state = BattleState.Busy;
 
-    // Utför spelarens attack, räknar ut skada och kollar om fienden svimmar
-    IEnumerator PerformPlayerMove()
+    // 1. Ta reda på vilken attack spelaren valde
+    var playerMove = playerUnit.Pokemon.Moves[currentMove];
+    
+    // 2. Låt fienden välja en slumpmässig attack 
+    int randomIndex = UnityEngine.Random.Range(0, enemyUnit.Pokemon.Moves.Count);
+    var enemyMove = enemyUnit.Pokemon.Moves[randomIndex];
+
+    // 3. Kolla vem som är snabbast
+    bool playerGoesFirst = true;
+
+    if (playerUnit.Pokemon.Speed < enemyUnit.Pokemon.Speed)
     {
-        state = BattleState.Busy; // Låser knapparna så man inte kan spamma under animationen
-        var move = playerUnit.Pokemon.Moves[currentMove];
+        playerGoesFirst = false;
+    }
+    else if (playerUnit.Pokemon.Speed == enemyUnit.Pokemon.Speed)
+    {
+        // Om de är exakt lika snabba, singla slant (50/50 chans)
+        playerGoesFirst = (UnityEngine.Random.Range(0, 2) == 0);
+    }
+
+    // 4. Kör attackerna i rätt ordning
+    if (playerGoesFirst)
+    {
+        // Spelaren är snabbast
+        yield return RunMove(playerUnit, enemyUnit, playerMove, enemyHud);
         
-        dialogBox.EnableDialogText(true); 
+        // Om fienden svimmade av spelarens attack, avbryt turen här
+        if (state == BattleState.Start) yield break; 
+
+        // Annars slår fienden nu
+        yield return RunMove(enemyUnit, playerUnit, enemyMove, playerHud);
+    }
+    else
+    {
+        // Fienden är snabbast!
+        yield return RunMove(enemyUnit, playerUnit, enemyMove, playerHud);
         
-        yield return dialogBox.TypeDialog($"{playerUnit.Pokemon.Name} used {move.Base.Name}!");
+        // Om spelaren svimmade av fiendens attack, avbryt turen här
+        if (state == BattleState.Start) yield break;
+
+        // Annars slår spelaren nu
+        yield return RunMove(playerUnit, enemyUnit, playerMove, enemyHud);
+    }
+
+    // 5. Om båda överlevde rundan, ge tillbaka kontrollen till spelaren
+    if (state != BattleState.Start)
+    {
+        PlayerAction();
+    }
+}
+IEnumerator RunMove(BattleUnit attacker, BattleUnit defender, Move move, Battlehud defenderHud)
+{
+    dialogBox.EnableDialogText(true); 
+    
+    yield return dialogBox.TypeDialog($"{attacker.Pokemon.Name} used {move.Base.Name}!");
+    yield return new WaitForSeconds(1f);
+
+    // Gör skada på försvararen
+    bool isFainted = defender.Pokemon.TakeDamage(move, attacker.Pokemon);
+    yield return defenderHud.UpdateHP();
+
+    if (isFainted)
+    {
+        yield return dialogBox.TypeDialog($"{defender.Pokemon.Name} fainted!");
         yield return new WaitForSeconds(1f);
 
-        // Fienden tar skada. Returnerar true om fiendens HP blev 0
-        bool isFainted = enemyUnit.Pokemon.TakeDamage(move, playerUnit.Pokemon);
-        
-        yield return enemyHud.UpdateHP(); // Animerar HP-mätaren på skärmen
-
-        if (isFainted)
+        // Kolla vem det var som svimmade genom att se om det var spelaren eller fienden
+        if (defender == enemyUnit)
         {
-            yield return dialogBox.TypeDialog($"{enemyUnit.Pokemon.Name} fainted!");
-            yield return new WaitForSeconds(1f);
-
-            // PARTYSYSTEMET: Letar efter nästa friska Pokémon i fiendens lag
+            // Fienden svimmade -> Leta efter nästa friska fiende
             var nextPokemon = GetHealthyEnemyPokemon();
             if (nextPokemon != null)
             {
-                // Om det finns en gubbe kvar: Skicka ut den och uppdatera HUD:en
                 enemyUnit.Setup(nextPokemon, false);
                 enemyHud.SetData(nextPokemon);
                 yield return dialogBox.TypeDialog($"Enemy sent out {nextPokemon.Name}!");
                 yield return new WaitForSeconds(1f);
-                PlayerAction(); // Startar om spelarens tur mot den nya gubben
+                PlayerAction();
             }
             else
             {
-                // Om inga gubbar finns kvar i fiendens lista har du vunnit
                 yield return dialogBox.TypeDialog("You won the battle!");
+                state = BattleState.Start; // Sätter till start för att markera att striden är helt slut
             }
         }
         else
         {
-            // Om fienden överlevde är det dess tur att attackera
-            StartCoroutine(EnemyMove());
-        }
-    }
-
-    // Utför fiendens slumpmässiga attack, drar av HP från spelaren och hanterar om spelaren svimmar
-    IEnumerator EnemyMove()
-    {
-        state = BattleState.EnemyMove;
-
-        // Väljer en helt slumpmässig attack från fiendens tillgängliga attacker
-        int randomIndex = UnityEngine.Random.Range(0, enemyUnit.Pokemon.Moves.Count);
-        var move = enemyUnit.Pokemon.Moves[randomIndex];
-
-        yield return dialogBox.TypeDialog($"Wild {enemyUnit.Pokemon.Name} used {move.Base.Name}!");
-        yield return new WaitForSeconds(1f);
-
-        // Spelaren tar skada. Returnerar true om spelarens HP blev 0
-        bool isFainted = playerUnit.Pokemon.TakeDamage(move, enemyUnit.Pokemon);
-        
-        yield return playerHud.UpdateHP(); // Animerar spelarens HP-mätare
-
-        if (isFainted)
-        {
-            yield return dialogBox.TypeDialog($"{playerUnit.Pokemon.Name} fainted!");
-            yield return new WaitForSeconds(1f);
-
-            // PARTYSYSTEMET: Letar efter nästa friska Pokémon i ditt eget lag
+            // Spelaren svimmade -> Leta efter nästa friska spelar-Pokémon
             var nextPokemon = GetHealthyPlayerPokemon();
             if (nextPokemon != null)
             {
-                // Om du har gubbar kvar: Skicka ut nästa och uppdatera dess attacker på skärmen
                 playerUnit.Setup(nextPokemon, true);
                 playerHud.SetData(nextPokemon);
-                dialogBox.SetMoveNames(nextPokemon.Moves); 
+                dialogBox.SetMoveNames(nextPokemon.Moves);
                 yield return dialogBox.TypeDialog($"Go {nextPokemon.Name}!");
                 yield return new WaitForSeconds(1f);
-                PlayerAction(); // Ger dig kontrollen igen med din nya Pokémon
+                PlayerAction();
             }
             else
             {
-                // Om alla dina Pokémon i listan har 0 HP förlorar du striden
                 yield return dialogBox.TypeDialog("You lost the battle...");
+                state = BattleState.Start; // Sätter till start för att markera att striden är helt slut
             }
         }
-        else
-        {
-            // Om din Pokémon överlevde attacken får du göra ditt val igen
-            PlayerAction();
-        }
     }
+}
+    
 }
