@@ -18,6 +18,7 @@ MonoBehaviour:
   backAnimator: {fileID: 0}
   frontSprite: {fileID: 6027302175543392423, guid: bcde4ada8c3d8854b8ded0ef335682ce, type: 3}
   backSprite: {fileID: 8617051359438195639, guid: ec0cf63ef17120f48aa7184a24f22382, type: 3}
+  cry: {fileID: 8300000, guid: 4b086d9826378884bb4428c996d6deb6, type: 3}
   type1: 17
   type2: 9
   maxHp: 108
@@ -28,8 +29,6 @@ MonoBehaviour:
   speed: 102
   learnableMoves:
   - moveBase: {fileID: 11400000, guid: 4405fd1a8ee70ff4a862f9aea9694abf, type: 2}
-    level: 50
-  - moveBase: {fileID: 11400000, guid: 60a60283da8844e409bdcaa90146defd, type: 2}
     level: 50
   - moveBase: {fileID: 11400000, guid: ae54c5d498f34b749ba8c9b939d3dbc8, type: 2}
     level: 50

@@ -18,9 +18,10 @@ MonoBehaviour:
   backAnimator: {fileID: 0}
   frontSprite: {fileID: 1199501018403949032, guid: c5c1a37f01e2a554b921900c8090e9f7, type: 3}
   backSprite: {fileID: -1835124197688926857, guid: e17b4f224dc1bc84c8637d767762149c, type: 3}
+  cry: {fileID: 8300000, guid: 2e44867a913a53543947ac9ed6f89fac, type: 3}
   type1: 2
   type2: 3
-  maxHp: 76
+  maxHp: 80
   attack: 104
   defence: 71
   spAttack: 104

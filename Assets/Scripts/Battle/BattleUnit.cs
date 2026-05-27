@@ -22,6 +22,23 @@ public class BattleUnit : MonoBehaviour
 
     public Pokemon Pokemon { get; set; }
 
+    AudioSource audioSource; // Spelaren som spelar upp ljudet
+
+    private void Awake()
+    {
+        // Hämtar AudioSource-komponenten när spelet startar
+        audioSource = GetComponent<AudioSource>();
+    }
+
+    public void PlayCry()
+    {
+        // Spela bara upp ljudet om det faktiskt finns en ljudfil tilldelad
+        if (Pokemon.Base.Cry != null && audioSource != null)
+        {
+            audioSource.PlayOneShot(Pokemon.Base.Cry);
+        }
+    }
+
 public void Setup(Pokemon pokemon)
 {
     Pokemon = pokemon;

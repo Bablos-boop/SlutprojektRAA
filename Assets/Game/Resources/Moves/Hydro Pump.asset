@@ -15,6 +15,6 @@ MonoBehaviour:
   name: Hydro Pump
   description: "\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t"
   type: 4
-  power: 110
+  power: 100
   accuracy: 80
   pp: 8

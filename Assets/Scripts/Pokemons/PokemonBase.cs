@@ -25,6 +25,7 @@ public class PokemonBase : ScriptableObject
 
     [SerializeField] Sprite frontSprite; // Bilden på gubben framifrån (om du inte kör animationer).
     [SerializeField] Sprite backSprite;  // Bilden på gubben bakifrån (rumpan).
+    [SerializeField] AudioClip cry;      // Ljudfilen för gubbens cry
     [SerializeField] PokemonType type1;  // Element-typ 1 (typ Eld, Vatten, Gräs).
     [SerializeField] PokemonType type2;  // Element-typ 2 (om den är både Eld och Flygande. Annars "None").
 
@@ -37,6 +38,11 @@ public class PokemonBase : ScriptableObject
     public Sprite BackSprite
     {
         get { return backSprite; }
+    }
+
+    public AudioClip Cry
+    {
+        get { return cry; }
     }
 
     // "int" betyder HELTAL. Inga halva liv eller 1.5 i attack här inte!

@@ -1,6 +1,6 @@
 using System;
 using System.Collections;
-using System.Collections.Generic; // Lägger till stöd för listor (så vi kan ha party-lag)
+using System.Collections.Generic; // Lägger till stöd för listor (så man kan ha party-lag)
 using UnityEngine;
 
 // Håller koll på vems tur det är eller vad som händer i striden just nu
@@ -79,7 +79,11 @@ public class BattleSystem : MonoBehaviour
 
         // Laddar in den aktiva spelar-Pokémonens attacker i dialogrutan
         dialogBox.SetMoveNames(playerUnit.Pokemon.Moves);
+        if (firstEnemy != null) enemyUnit.PlayCry(); // Fienden ryter först
+        yield return new WaitForSeconds(0.5f);       // Kort paus så ljuden inte krockar
 
+
+        if (firstPlayer != null) playerUnit.PlayCry(); // Sen ryter din
         // Skriver ut introduktionstexten och väntar 1 sekund
         yield return dialogBox.TypeDialog($"A wild {enemyUnit.Pokemon.Base.Name} appeared.");
         yield return new WaitForSeconds(1f);
@@ -249,26 +253,26 @@ IEnumerator RunTurns()
         // Spelaren är snabbast
         yield return RunMove(playerUnit, enemyUnit, playerMove, enemyHud);
         
-        // Om fienden svimmade av spelarens attack, avbryt turen här
-        if (state == BattleState.Start) yield break; 
+        // FIX: Om fienden svimmade (statusen är inte Busy längre). avbruten
+        if (state != BattleState.Busy) yield break; 
 
         // Annars slår fienden nu
         yield return RunMove(enemyUnit, playerUnit, enemyMove, playerHud);
     }
     else
     {
-        // Fienden är snabbast!
+        // Fienden är snabbare
         yield return RunMove(enemyUnit, playerUnit, enemyMove, playerHud);
         
-        // Om spelaren svimmade av fiendens attack, avbryt turen här
-        if (state == BattleState.Start) yield break;
+        // FIX: Om spelaren svimmade (statusen är inte Busy längre), avbryt turen direkt!
+        if (state != BattleState.Busy) yield break;
 
         // Annars slår spelaren nu
         yield return RunMove(playerUnit, enemyUnit, playerMove, enemyHud);
     }
 
-    // 5. Om båda överlevde rundan, ge tillbaka kontrollen till spelaren
-    if (state != BattleState.Start)
+    // 5. Om båda överlevde rundan (statusen är fortfarande Busy), ge tillbaka kontrollen till spelaren
+    if (state == BattleState.Busy)
     {
         PlayerAction();
     }
@@ -298,6 +302,7 @@ IEnumerator RunMove(BattleUnit attacker, BattleUnit defender, Move move, Battleh
             {
                 enemyUnit.Setup(nextPokemon, false);
                 enemyHud.SetData(nextPokemon);
+                enemyUnit.PlayCry();
                 yield return dialogBox.TypeDialog($"Enemy sent out {nextPokemon.Name}!");
                 yield return new WaitForSeconds(1f);
                 PlayerAction();
@@ -317,6 +322,7 @@ IEnumerator RunMove(BattleUnit attacker, BattleUnit defender, Move move, Battleh
                 playerUnit.Setup(nextPokemon, true);
                 playerHud.SetData(nextPokemon);
                 dialogBox.SetMoveNames(nextPokemon.Moves);
+                playerUnit.PlayCry();
                 yield return dialogBox.TypeDialog($"Go {nextPokemon.Name}!");
                 yield return new WaitForSeconds(1f);
                 PlayerAction();

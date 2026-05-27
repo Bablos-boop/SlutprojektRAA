@@ -18,6 +18,7 @@ MonoBehaviour:
   backAnimator: {fileID: 22100000, guid: a468ff2505e3f6c4dbf724a4ba8ecf25, type: 2}
   frontSprite: {fileID: -4505388099979798363, guid: ec0c00997904fb3438d7a0b8d068672c, type: 3}
   backSprite: {fileID: 20305871001308992, guid: d5e9ff0d33abf2a4b818b81546b71d07, type: 3}
+  cry: {fileID: 8300000, guid: b5720582df65fc2419a18783498654a2, type: 3}
   type1: 4
   type2: 5
   maxHp: 84
